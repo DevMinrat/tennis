@@ -1,13 +1,17 @@
 package com.devminrat.tennis.entity;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
 public class Player {
     @Id
+    @GeneratedValue
     private Integer id;
+    @Column(unique=true)
     private String name;
 
     public Player() {

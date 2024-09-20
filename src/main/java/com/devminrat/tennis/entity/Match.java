@@ -1,12 +1,16 @@
 package com.devminrat.tennis.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 public class Match {
     @Id
+    @GeneratedValue
     private int id;
+    @JoinColumn()
     private int player1;
     private int player2;
     private int winner;
