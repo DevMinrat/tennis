@@ -32,17 +32,7 @@ public class MatchScoreController extends HttpServlet {
         try (SessionFactory sessionFactory = cfg.buildSessionFactory(); Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Player player = new Player();
-            player.setName("Player-1");
-            session.persist(player);
-
-            Player player2 = new Player();
-            player2.setName("Player-2");
-            session.persist(player2);
-
-            session.getTransaction().commit();
-
-            Connection conn = DriverManager.getConnection("jdbc:h2:mem:tennis");
+            Connection conn = DriverManager.getConnection("jdbc:h2:E:/JAVA/practice/_prj/tennis/src/main/resources/data/tennis");
             ResultSet resultSet = conn.createStatement().executeQuery("SELECT * from Player");
             while (resultSet.next()) {
                 Player p = new Player(resultSet.getInt("id"), resultSet.getString("name"));
