@@ -8,15 +8,15 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player1_id", referencedColumnName = "id")
     private Player player1;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "player2_id", referencedColumnName = "id")
     private Player player2;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "winner_id", referencedColumnName = "id")
     private Player winner;
 

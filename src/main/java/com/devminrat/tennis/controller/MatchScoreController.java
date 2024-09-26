@@ -32,18 +32,16 @@ public class MatchScoreController extends HttpServlet {
         try (SessionFactory sessionFactory = cfg.buildSessionFactory(); Session session = sessionFactory.openSession()) {
             session.beginTransaction();
 
-            Connection conn = DriverManager.getConnection("jdbc:h2:E:/JAVA/practice/_prj/tennis/src/main/resources/data/tennis");
-            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * from Player");
-            while (resultSet.next()) {
-                Player p = new Player(resultSet.getInt("id"), resultSet.getString("name"));
-                players.add(p);
-
-            }
+            var player1 = session.get(Player.class, 1);
+            var player2 = session.get(Player.class, 2);
+            players.add(player1);
+            players.add(player2);
 
             String json = objectMapper.writeValueAsString(players);
             response.getWriter().println(json);
 
-        } catch (SQLException e) {
+            session.getTransaction().commit();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
