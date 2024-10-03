@@ -9,6 +9,10 @@
 </h1>
 <br/>
 <a href="match-score">Hello Servlet</a>
+<br>
+<a href="${pageContext.request.contextPath}/new-match.jsp">New Match</a>
+
+</form>
 
 
 </body>

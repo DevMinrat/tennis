@@ -8,6 +8,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 public class HibernateRunnerTest {
 
     @Test
@@ -23,6 +26,15 @@ public class HibernateRunnerTest {
 
             var match = Match.builder().player1(player1).player2(player2).winner(player1).build();
             session.persist(match);
+
+            assertEquals("test_player_1", match.getPlayer1().getName());
+            assertEquals("test_player_2", match.getPlayer2().getName());
+
+            session.remove(match);
+
+            assertNull(session.get(Match.class, match.getId()));
+            assertNull(session.get(Player.class, player1.getId()));
+            assertNull(session.get(Player.class, player2.getId()));
 
             session.getTransaction().commit();
         } catch (HibernateException e) {

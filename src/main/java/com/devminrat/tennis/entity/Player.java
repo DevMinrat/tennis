@@ -3,8 +3,6 @@ package com.devminrat.tennis.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 public class Player {
     @Id
