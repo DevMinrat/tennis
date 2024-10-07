@@ -8,26 +8,31 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "player1_id", referencedColumnName = "id")
     private Player player1;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "player2_id", referencedColumnName = "id")
     private Player player2;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "winner_id", referencedColumnName = "id")
     private Player winner;
+
+    @Embedded
+    @Transient
+    private MatchScore matchScore;
 
     public Match() {
     }
 
-    public Match(int id, Player player1, Player player2, Player winner) {
+    public Match(int id, Player player1, Player player2, Player winner, MatchScore matchScore) {
         this.id = id;
         this.player1 = player1;
         this.player2 = player2;
         this.winner = winner;
+        this.matchScore = matchScore;
     }
 
     public int getId() {
@@ -62,11 +67,31 @@ public class Match {
         this.winner = winner;
     }
 
+    public MatchScore getMatchScore() {
+        return matchScore;
+    }
+
+    public void setMatchScore(MatchScore matchScore) {
+        this.matchScore = matchScore;
+    }
+
+    @Override
+    public String toString() {
+        return "Match{" +
+                "id=" + id +
+                ", player1=" + player1 +
+                ", player2=" + player2 +
+                ", winner=" + winner +
+                ", matchScore=" + matchScore +
+                '}';
+    }
+
     public static class MatchBuilder {
         private int id;
         private Player player1;
         private Player player2;
         private Player winner;
+        private MatchScore matchScore;
 
         public MatchBuilder() {
         }
@@ -91,8 +116,13 @@ public class Match {
             return this;
         }
 
+        public MatchBuilder matchScore(MatchScore matchScore) {
+            this.matchScore = matchScore;
+            return this;
+        }
+
         public Match build() {
-            return new Match(id, player1, player2, winner);
+            return new Match(id, player1, player2, winner, matchScore);
         }
     }
 

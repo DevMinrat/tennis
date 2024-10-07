@@ -19,7 +19,7 @@
         <input type="text" name="player2" id="player2">
     </label>
     <br>
-    <button type="submit">Send</button>
+    <button type="submit">Start match</button>
 </form>
 
 </body>

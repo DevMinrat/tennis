@@ -1,7 +1,11 @@
 package com.devminrat.tennis.controller;
 
+import com.devminrat.tennis.entity.Match;
+import com.devminrat.tennis.entity.MatchScore;
 import com.devminrat.tennis.entity.Player;
-import com.devminrat.tennis.model.PlayerDaoImpl;
+import com.devminrat.tennis.manager.MatchManager;
+import com.devminrat.tennis.service.PlayerService;
+import com.devminrat.tennis.service.PlayerServiceImpl;
 import com.devminrat.tennis.util.HibernateUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,29 +15,33 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @WebServlet(name = "newMatchController", value = "/new-match")
 public class NewMatchController extends HttpServlet {
-
-    PlayerDaoImpl pdao = new PlayerDaoImpl();
+    PlayerService playerService = new PlayerServiceImpl();
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
             session.beginTransaction();
 
-            String player1 = request.getParameter("player1");
-            String player2 = request.getParameter("player2");
+            String player1Name = request.getParameter("player1");
+            String player2Name = request.getParameter("player2");
 
-            System.out.println(player1);
-            System.out.println(player2);
+            if (player1Name != null && player2Name != null) {
+                Player player1 = playerService.findOrCreatePlayer(session, player1Name);
+                Player player2 = playerService.findOrCreatePlayer(session, player2Name);
 
-            Player pl = pdao.getPlayer(session, "Player-1");
+                UUID matchID = UUID.randomUUID();
+                Match match = Match.builder().player1(player1).player2(player2)
+                        .matchScore(new MatchScore()).build();
+                MatchManager.addMatch(matchID, match);
 
-            System.out.println(pl);
+                response.sendRedirect(request.getContextPath() + "/match-score?uuid=" + matchID);
 
-
-            session.getTransaction().commit();
-
+            } else {
+                System.out.println("set players!");
+            }
         }
     }
 }
