@@ -21,6 +21,7 @@ import java.util.UUID;
 public class NewMatchController extends HttpServlet {
     PlayerService playerService = new PlayerServiceImpl();
 
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
             session.beginTransaction();

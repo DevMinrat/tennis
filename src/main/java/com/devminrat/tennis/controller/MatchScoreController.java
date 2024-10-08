@@ -1,36 +1,50 @@
 package com.devminrat.tennis.controller;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.entity.MatchScore;
-import com.devminrat.tennis.entity.Player;
 import com.devminrat.tennis.manager.MatchManager;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.h2.expression.function.table.CSVReadFunction;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 @WebServlet(name = "matchScoreController", value = "/match-score")
 public class MatchScoreController extends HttpServlet {
+    private MatchScore matchScore;
+    private Match match;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID matchId = UUID.fromString(request.getParameter("uuid"));
-        Match match = MatchManager.getMatch(matchId);
+        match = MatchManager.getMatch(matchId);
+        matchScore = match.getMatchScore();
 
         if (match != null) {
-            MatchScore matchScore = match.getMatchScore();
-            System.out.println(match);
-            System.out.println(matchScore);
+            request.setAttribute("match", match);
+            request.getRequestDispatcher("/match-score.jsp").forward(request, response);
 
         } else {
             System.out.println("Match not found");
         }
+    }
+
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        var pointWinner = (String) request.getParameter("winner");
+
+        System.out.println(pointWinner);
+
+        if (pointWinner != null && pointWinner.equals("player1")) {
+            System.out.println("winner is player1");
+            matchScore.setPlayer1Points(15);
+            System.out.println(matchScore.getPlayer1Points());
+        } else if (pointWinner != null && pointWinner.equals("player2")) {
+            matchScore.setPlayer2Points(15);
+        }
+
+        request.setAttribute("match", match);
+        request.getRequestDispatcher("/match-score.jsp").forward(request, response);
     }
 }
