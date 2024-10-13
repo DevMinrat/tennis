@@ -7,6 +7,7 @@ public class MatchScore {
     private int player2Games;
     private int player1Sets;
     private int player2Sets;
+    private boolean isMatchFinished;
 
     public int getPlayer1Points() {
         return player1Points;
@@ -55,6 +56,47 @@ public class MatchScore {
     public void setPlayer2Sets(int player2Sets) {
         this.player2Sets = player2Sets;
     }
+
+    public boolean getIsMatchFinished() {
+        return isMatchFinished;
+    }
+
+    public void setIsMatchFinished(boolean isMatchFinished) {
+        this.isMatchFinished = isMatchFinished;
+    }
+
+    public void addPlayerOnePoint(String player) {
+        if (player.equals("player1")) {
+            this.player1Points++;
+        } else {
+            this.player2Points++;
+        }
+    }
+
+    public void removePlayerOnePoint(String player) {
+        if (player.equals("player1")) {
+            this.player1Points--;
+        } else {
+            this.player2Points--;
+        }
+    }
+
+    public void addPlayerOneGame(String player) {
+        if (player.equals("player1")) {
+            this.player1Games++;
+        } else {
+            this.player2Games++;
+        }
+    }
+
+    public void addPlayerOneSet(String player) {
+        if (player.equals("player1")) {
+            this.player1Sets++;
+        } else {
+            this.player2Sets++;
+        }
+    }
+
 
     @Override
     public String toString() {
