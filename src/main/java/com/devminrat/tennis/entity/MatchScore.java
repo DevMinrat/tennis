@@ -11,6 +11,18 @@ public class MatchScore {
     private int player2Sets;
     private boolean isMatchFinished;
 
+    public MatchScore() {
+    }
+
+    public MatchScore(int player1Points, int player2Points, int player1Games, int player2Games, int player1Sets, int player2Sets) {
+        this.player1Points = player1Points;
+        this.player2Points = player2Points;
+        this.player1Games = player1Games;
+        this.player2Games = player2Games;
+        this.player1Sets = player1Sets;
+        this.player2Sets = player2Sets;
+    }
+
     public void setPlayerPoints(PlayerType player, int points) {
         if (player == PlayerType.PLAYER1) {
             this.player1Points = points;
