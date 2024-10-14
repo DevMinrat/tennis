@@ -9,14 +9,14 @@
 </h1>
 <br/>
 <h1>Match between ${match.player1.getName()} and ${match.player2.getName()}</h1>
-<p>Player 1: ${match.matchScore.player1Sets} sets</p>
-<p>Player 2: ${match.matchScore.player2Sets} sets</p>
+<p>Player 1: ${player1Sets} sets</p>
+<p>Player 2: ${player2Sets} sets</p>
 <br>
-<p>Player 1: ${match.matchScore.player1Games} games</p>
-<p>Player 2: ${match.matchScore.player2Games} games</p>
+<p>Player 1: ${player1Games} games</p>
+<p>Player 2: ${player2Games} games</p>
 <br>
-<p>Player 1: ${match.matchScore.player1Points} points</p>
-<p>Player 2: ${match.matchScore.player2Points} points</p>
+<p>Player 1: ${player1Points} points</p>
+<p>Player 2: ${player2Points} points</p>
 
 <br>
 <form method="post" action="match-score">

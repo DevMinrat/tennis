@@ -3,27 +3,27 @@ package com.devminrat.tennis.controller;
 import java.io.*;
 import java.util.UUID;
 
+import com.devminrat.tennis.constants.PlayerType;
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.entity.MatchScore;
 import com.devminrat.tennis.manager.MatchManager;
+import com.devminrat.tennis.service.MatchScoreCalcService;
+import com.devminrat.tennis.service.MatchScoreCalcServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
 @WebServlet(name = "matchScoreController", value = "/match-score")
 public class MatchScoreController extends HttpServlet {
-    private MatchScore matchScore;
     private Match match;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID matchId = UUID.fromString(request.getParameter("uuid"));
         match = MatchManager.getMatch(matchId);
-        matchScore = match.getMatchScore();
 
         if (match != null) {
-            request.setAttribute("match", match);
-            request.getRequestDispatcher("/match-score.jsp").forward(request, response);
+            setMatchScoreAttributes(request, response);
 
         } else {
             System.out.println("Match not found");
@@ -32,19 +32,24 @@ public class MatchScoreController extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        var pointWinner = (String) request.getParameter("winner");
+        MatchScoreCalcService matchScoreCalcService = new MatchScoreCalcServiceImpl();
+        PlayerType pointWinner = PlayerType.valueOf((request.getParameter("winner").toUpperCase()));
 
-        System.out.println(pointWinner);
+        matchScoreCalcService.updateScore(match, pointWinner);
 
-        if (pointWinner != null && pointWinner.equals("player1")) {
-            System.out.println("winner is player1");
-            matchScore.setPlayer1Points(15);
-            System.out.println(matchScore.getPlayer1Points());
-        } else if (pointWinner != null && pointWinner.equals("player2")) {
-            matchScore.setPlayer2Points(15);
-        }
+        setMatchScoreAttributes(request, response);
+    }
 
+    private void setMatchScoreAttributes(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("match", match);
+
+        request.setAttribute("player1Points", match.getMatchScore().getPlayerPoints(PlayerType.PLAYER1));
+        request.setAttribute("player2Points", match.getMatchScore().getPlayerPoints(PlayerType.PLAYER2));
+        request.setAttribute("player1Games", match.getMatchScore().getPlayerGames(PlayerType.PLAYER1));
+        request.setAttribute("player2Games", match.getMatchScore().getPlayerGames(PlayerType.PLAYER2));
+        request.setAttribute("player1Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER1));
+        request.setAttribute("player2Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER2));
+
         request.getRequestDispatcher("/match-score.jsp").forward(request, response);
     }
 }

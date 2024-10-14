@@ -1,5 +1,6 @@
 package com.devminrat.tennis.controller;
 
+import com.devminrat.tennis.constants.PlayerType;
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.entity.MatchScore;
 import com.devminrat.tennis.entity.Player;
@@ -26,8 +27,8 @@ public class NewMatchController extends HttpServlet {
         try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
             session.beginTransaction();
 
-            String player1Name = request.getParameter("player1");
-            String player2Name = request.getParameter("player2");
+            String player1Name = request.getParameter(PlayerType.PLAYER1.name().toLowerCase());
+            String player2Name = request.getParameter(PlayerType.PLAYER2.name().toLowerCase());
 
             if (player1Name != null && player2Name != null) {
                 Player player1 = playerService.findOrCreatePlayer(session, player1Name);

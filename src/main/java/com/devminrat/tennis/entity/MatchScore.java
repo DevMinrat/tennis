@@ -1,5 +1,7 @@
 package com.devminrat.tennis.entity;
 
+import com.devminrat.tennis.constants.PlayerType;
+
 public class MatchScore {
     private int player1Points;
     private int player2Points;
@@ -9,52 +11,72 @@ public class MatchScore {
     private int player2Sets;
     private boolean isMatchFinished;
 
-    public int getPlayer1Points() {
-        return player1Points;
+    public void setPlayerPoints(PlayerType player, int points) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Points = points;
+        } else {
+            this.player2Points = points;
+        }
     }
 
-    public void setPlayer1Points(int player1Points) {
-        this.player1Points = player1Points;
+    public int getPlayerPoints(PlayerType player) {
+        return player == PlayerType.PLAYER1 ? this.player1Points : this.player2Points;
     }
 
-    public int getPlayer2Points() {
-        return player2Points;
+    public void setPlayerGames(PlayerType player, int games) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Games = games;
+        } else {
+            this.player2Games = games;
+        }
     }
 
-    public void setPlayer2Points(int player2Points) {
-        this.player2Points = player2Points;
+    public int getPlayerGames(PlayerType player) {
+        return player == PlayerType.PLAYER1 ? this.player1Games : this.player2Games;
     }
 
-    public int getPlayer1Games() {
-        return player1Games;
+    public void setPlayerSets(PlayerType player, int sets) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Sets = sets;
+        } else {
+            this.player2Sets = sets;
+        }
     }
 
-    public void setPlayer1Games(int player1Games) {
-        this.player1Games = player1Games;
+    public int getPlayerSets(PlayerType player) {
+        return player == PlayerType.PLAYER1 ? this.player1Sets : this.player2Sets;
     }
 
-    public int getPlayer2Games() {
-        return player2Games;
+    public void incrementPlayerPoints(PlayerType player) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Points++;
+        } else {
+            this.player2Points++;
+        }
     }
 
-    public void setPlayer2Games(int player2Games) {
-        this.player2Games = player2Games;
+    public void decrementPlayerPoints(PlayerType player) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Points--;
+        } else {
+            this.player2Points--;
+        }
     }
 
-    public int getPlayer1Sets() {
-        return player1Sets;
+    public void incrementPlayerGames(PlayerType player) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Games++;
+        } else {
+            this.player2Games++;
+        }
     }
 
-    public void setPlayer1Sets(int player1Sets) {
-        this.player1Sets = player1Sets;
-    }
-
-    public int getPlayer2Sets() {
-        return player2Sets;
-    }
-
-    public void setPlayer2Sets(int player2Sets) {
-        this.player2Sets = player2Sets;
+    public void incrementPlayerSets(PlayerType player) {
+        if (player == PlayerType.PLAYER1) {
+            this.player1Sets++;
+        } else {
+            this.player2Sets++;
+        }
     }
 
     public boolean getIsMatchFinished() {
@@ -64,39 +86,6 @@ public class MatchScore {
     public void setIsMatchFinished(boolean isMatchFinished) {
         this.isMatchFinished = isMatchFinished;
     }
-
-    public void addPlayerOnePoint(String player) {
-        if (player.equals("player1")) {
-            this.player1Points++;
-        } else {
-            this.player2Points++;
-        }
-    }
-
-    public void removePlayerOnePoint(String player) {
-        if (player.equals("player1")) {
-            this.player1Points--;
-        } else {
-            this.player2Points--;
-        }
-    }
-
-    public void addPlayerOneGame(String player) {
-        if (player.equals("player1")) {
-            this.player1Games++;
-        } else {
-            this.player2Games++;
-        }
-    }
-
-    public void addPlayerOneSet(String player) {
-        if (player.equals("player1")) {
-            this.player1Sets++;
-        } else {
-            this.player2Sets++;
-        }
-    }
-
 
     @Override
     public String toString() {

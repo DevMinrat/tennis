@@ -1,32 +1,45 @@
 package com.devminrat.tennis.service;
 
-import com.devminrat.tennis.constants.Point;
+import com.devminrat.tennis.constants.PlayerType;
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.entity.MatchScore;
-import com.devminrat.tennis.entity.Player;
 
 public class MatchScoreCalcServiceImpl implements MatchScoreCalcService {
+    private static final PlayerType PLAYER_1 = PlayerType.PLAYER1;
+    private static final PlayerType PLAYER_2 = PlayerType.PLAYER2;
+    private static final int POINTS_TO_WIN_GAME = 4;
+    private static final int POINTS_TO_WIN_SET = 6;
+    private static final int POINTS_TO_WIN_MATCH = 2;
+    private static final int DEUCE_POINTS = 3;
+    private static final int PREPONDERANCE = 2;
+
     @Override
-    public void updateScore(Match match, String playerWhoScored) {
+    public void updateScore(Match match, PlayerType playerWhoScored) {
         MatchScore matchScore = match.getMatchScore();
-        var wop = new WinnerAndOpponentPlayers(playerWhoScored);
-        String pWinnerPlayer = wop.getPointWinnerPlayer();
-        String opponentPlayer = wop.getOpponentPlayer();
+        PlayerType opponentPlayer = getOpponentPlayer(playerWhoScored);
 
         if (checkAdvantageScore(matchScore)) {
             handleAdvantageScore(matchScore, playerWhoScored);
         } else {
-            matchScore.addPlayerOnePoint(playerWhoScored);
+            matchScore.incrementPlayerPoints(playerWhoScored);
         }
 
         if (checkDeuceScore(matchScore)) {
             return;
         }
 
-        //continue from "checkPointsFunc"
+        if (checkPointsForGame(matchScore, playerWhoScored, opponentPlayer)) {
+            addOneGameAndResetPoints(matchScore, playerWhoScored);
 
-        pWinnerPlayer = "das";
-
+            if (checkGamesForSet(matchScore, playerWhoScored, opponentPlayer)) {
+                addOneSetAndResetGames(matchScore, playerWhoScored);
+                if (checkSets(matchScore, playerWhoScored)) {
+                    matchScore.setIsMatchFinished(true);
+                    System.out.println("MATCH FINISHED");
+                    // run service for finishing game.
+                }
+            }
+        }
     }
 
     @Override
@@ -34,51 +47,53 @@ public class MatchScoreCalcServiceImpl implements MatchScoreCalcService {
         return match.getMatchScore().getIsMatchFinished();
     }
 
-    private boolean checkAdvantageScore(MatchScore matchScore) {
-        return matchScore.getPlayer1Points() == 4 || matchScore.getPlayer2Points() == 4;
+    private PlayerType getOpponentPlayer(PlayerType playerWhoScored) {
+        return playerWhoScored == PLAYER_1 ? PLAYER_2 : PLAYER_1;
     }
 
-    private void handleAdvantageScore(MatchScore matchScore, String playerWhoScored) {
-        int p1Points = matchScore.getPlayer1Points();
-        String leaderPlayer;
+    private boolean checkWinCondition(int playerScore, int opponentScore, int minToWin) {
+        return playerScore >= minToWin && playerScore - opponentScore >= MatchScoreCalcServiceImpl.PREPONDERANCE;
+    }
 
-        if (p1Points == 4) {
-            leaderPlayer = "player1";
-        } else {
-            leaderPlayer = "player2";
-        }
+    private boolean checkAdvantageScore(MatchScore matchScore) {
+        return matchScore.getPlayerPoints(PLAYER_1) == POINTS_TO_WIN_GAME || matchScore.getPlayerPoints(PLAYER_2) == POINTS_TO_WIN_GAME;
+    }
+
+    private void handleAdvantageScore(MatchScore matchScore, PlayerType playerWhoScored) {
+        PlayerType leaderPlayer = matchScore.getPlayerPoints(PLAYER_1) == POINTS_TO_WIN_GAME ? PLAYER_1 : PLAYER_2;
 
         if (playerWhoScored.equals(leaderPlayer)) {
-            matchScore.addPlayerOnePoint(leaderPlayer);
+            matchScore.incrementPlayerPoints(leaderPlayer);
         } else {
-            matchScore.removePlayerOnePoint(leaderPlayer);
+            matchScore.decrementPlayerPoints(leaderPlayer);
         }
     }
 
     private boolean checkDeuceScore(MatchScore matchScore) {
-        return matchScore.getPlayer1Points() == 3 && matchScore.getPlayer2Points() == 3;
+        return matchScore.getPlayerPoints(PLAYER_1) == DEUCE_POINTS && matchScore.getPlayerPoints(PLAYER_2) == DEUCE_POINTS;
     }
 
-    private static class WinnerAndOpponentPlayers {
-        private final String pointWinnerPlayer;
-        private final String opponentPlayer;
+    private boolean checkPointsForGame(MatchScore matchScore, PlayerType playerWhoScored, PlayerType opponentPlayer) {
+        return checkWinCondition(matchScore.getPlayerPoints(playerWhoScored), matchScore.getPlayerPoints(opponentPlayer), POINTS_TO_WIN_GAME);
+    }
 
-        public WinnerAndOpponentPlayers(String playerWhoScored) {
-            if (playerWhoScored.equals("player1")) {
-                this.pointWinnerPlayer = "player1";
-                this.opponentPlayer = "player2";
-            } else {
-                this.pointWinnerPlayer = "player2";
-                this.opponentPlayer = "player1";
-            }
-        }
+    private void addOneGameAndResetPoints(MatchScore matchScore, PlayerType playerWhoScored) {
+        matchScore.incrementPlayerGames(playerWhoScored);
+        matchScore.setPlayerPoints(PLAYER_1, 0);
+        matchScore.setPlayerPoints(PLAYER_2, 0);
+    }
 
-        public String getPointWinnerPlayer() {
-            return pointWinnerPlayer;
-        }
+    private boolean checkGamesForSet(MatchScore matchScore, PlayerType playerWhoScored, PlayerType opponentPlayer) {
+        return checkWinCondition(matchScore.getPlayerGames(playerWhoScored), matchScore.getPlayerGames(opponentPlayer), POINTS_TO_WIN_SET);
+    }
 
-        public String getOpponentPlayer() {
-            return opponentPlayer;
-        }
+    private void addOneSetAndResetGames(MatchScore matchScore, PlayerType playerWhoScored) {
+        matchScore.incrementPlayerSets(playerWhoScored);
+        matchScore.setPlayerGames(PLAYER_1, 0);
+        matchScore.setPlayerGames(PLAYER_2, 0);
+    }
+
+    private boolean checkSets(MatchScore matchScore, PlayerType playerWhoScored) {
+        return matchScore.getPlayerSets(playerWhoScored) == POINTS_TO_WIN_MATCH;
     }
 }
