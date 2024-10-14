@@ -3,6 +3,12 @@
 <html>
 <head>
     <title>Match Score</title>
+    <style>
+        body {
+            background-color: #1b1b1b;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <h1><%= "Match Score" %>
@@ -15,8 +21,8 @@
 <p>Player 1: ${player1Games} games</p>
 <p>Player 2: ${player2Games} games</p>
 <br>
-<p>Player 1: ${player1Points} points</p>
-<p>Player 2: ${player2Points} points</p>
+<p>Player 1: ${player1PointsDisplay} points</p>
+<p>Player 2: ${player2PointsDisplay} points</p>
 
 <br>
 <form method="post" action="match-score">

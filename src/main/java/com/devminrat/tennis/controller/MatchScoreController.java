@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.UUID;
 
 import com.devminrat.tennis.constants.PlayerType;
+import com.devminrat.tennis.constants.TennisScore;
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.entity.MatchScore;
 import com.devminrat.tennis.manager.MatchManager;
@@ -41,10 +42,13 @@ public class MatchScoreController extends HttpServlet {
     }
 
     private void setMatchScoreAttributes(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String player1PointsDisplay = TennisScore.getDisplayValue(match.getMatchScore().getPlayerPoints(PlayerType.PLAYER1));
+        String player2PointsDisplay = TennisScore.getDisplayValue(match.getMatchScore().getPlayerPoints(PlayerType.PLAYER2));
+
         request.setAttribute("match", match);
 
-        request.setAttribute("player1Points", match.getMatchScore().getPlayerPoints(PlayerType.PLAYER1));
-        request.setAttribute("player2Points", match.getMatchScore().getPlayerPoints(PlayerType.PLAYER2));
+        request.setAttribute("player1PointsDisplay", player1PointsDisplay);
+        request.setAttribute("player2PointsDisplay", player2PointsDisplay);
         request.setAttribute("player1Games", match.getMatchScore().getPlayerGames(PlayerType.PLAYER1));
         request.setAttribute("player2Games", match.getMatchScore().getPlayerGames(PlayerType.PLAYER2));
         request.setAttribute("player1Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER1));
