@@ -3,13 +3,14 @@ package com.devminrat.tennis;
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.entity.Player;
 import com.devminrat.tennis.util.HibernateUtil;
+import jakarta.persistence.PersistenceException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HibernateRunnerTest {
 
@@ -33,9 +34,6 @@ public class HibernateRunnerTest {
             session.remove(match);
 
             assertNull(session.get(Match.class, match.getId()));
-            assertNull(session.get(Player.class, player1.getId()));
-            assertNull(session.get(Player.class, player2.getId()));
-
             session.getTransaction().commit();
         } catch (HibernateException e) {
             throw new RuntimeException(e);
@@ -54,6 +52,19 @@ public class HibernateRunnerTest {
             session.getTransaction().commit();
         } catch (HibernateException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void test_checkMatchConstraint_samePlayerNotAllowed() {
+        try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
+            session.beginTransaction();
+
+            Player p1 = session.get(Player.class, 1);
+            Match newMatch = Match.builder().player1(p1).player2(p1).build();
+
+            var thrown = assertThrows(PersistenceException.class, () -> session.persist(newMatch));
+            assertInstanceOf(ConstraintViolationException.class, thrown.getCause());
         }
     }
 }

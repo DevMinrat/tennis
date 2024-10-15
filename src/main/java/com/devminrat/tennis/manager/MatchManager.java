@@ -23,4 +23,8 @@ public class MatchManager {
     public static Match getMatch(UUID uuid) {
         return matches.get(uuid);
     }
+
+    public static void removeMatch(UUID uuid) {
+        matches.remove(uuid);
+    }
 }

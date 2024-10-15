@@ -6,11 +6,24 @@ import com.querydsl.jpa.impl.JPAQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
+import java.util.List;
+
 public class MatchDaoImpl implements MatchDao {
     @Override
-    public Match getMatch(Session session, int id) {
+    public Match getMatchById(Session session, int id) {
         return new JPAQuery<Match>(session).select(QMatch.match).from(QMatch.match)
                 .where(QMatch.match.id.eq(id)).fetchOne();
+    }
+
+    @Override
+    public List<Match> getMatchesByName(Session session, String name) {
+        return new JPAQuery<Match>(session).select(QMatch.match).from(QMatch.match)
+                .where(QMatch.match.player1.name.eq(name).or(QMatch.match.player2.name.eq(name))).fetch();
+    }
+
+    @Override
+    public List<Match> getAllMatches(Session session) {
+        return new JPAQuery<Match>(session).from(QMatch.match).fetch();
     }
 
     @Override

@@ -1,8 +1,11 @@
 package com.devminrat.tennis.entity;
 
+import com.devminrat.tennis.constants.PlayerType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Check;
 
 @Entity
+@Check(constraints = "player1_id <> player2_id")
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,8 +66,12 @@ public class Match {
         return winner;
     }
 
-    public void setWinner(Player winner) {
-        this.winner = winner;
+    public void setWinner(PlayerType winner) {
+        if (winner == PlayerType.PLAYER1) {
+            this.winner = player1;
+        } else {
+            this.winner = player2;
+        }
     }
 
     public MatchScore getMatchScore() {

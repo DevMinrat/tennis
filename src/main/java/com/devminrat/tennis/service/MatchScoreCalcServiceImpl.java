@@ -35,8 +35,7 @@ public class MatchScoreCalcServiceImpl implements MatchScoreCalcService {
                 addOneSetAndResetGames(matchScore, playerWhoScored);
                 if (checkSets(matchScore, playerWhoScored)) {
                     matchScore.setIsMatchFinished(true);
-                    System.out.println("MATCH FINISHED");
-                    // run service for finishing game.
+                    match.setWinner(playerWhoScored);
                 }
             }
         }
