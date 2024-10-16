@@ -21,12 +21,12 @@ import org.hibernate.SessionFactory;
 @WebServlet(name = "matchScoreController", value = "/match-score")
 public class MatchScoreController extends HttpServlet {
     private Match match;
-    private UUID matchId;
+    private UUID matchUUID;
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        matchId = UUID.fromString(request.getParameter("uuid"));
-        match = MatchManager.getMatch(matchId);
+        matchUUID = UUID.fromString(request.getParameter("uuid"));
+        match = MatchManager.getMatch(matchUUID);
 
         if (match != null) {
             setMatchScoreAttributes(request);
@@ -48,19 +48,14 @@ public class MatchScoreController extends HttpServlet {
             try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
                 session.beginTransaction();
 
-                MatchManager.removeMatch(matchId);
+                MatchManager.removeMatch(matchUUID);
                 fmps.addMatch(session, match);
 
                 session.getTransaction().commit();
             }
-            request.setAttribute("match", match);
-            request.setAttribute("player1Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER1));
-            request.setAttribute("player2Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER2));
-            request.getRequestDispatcher("/match-finish.jsp").forward(request, response);
-
+            response.sendRedirect(request.getContextPath() + "/match-finish?matchId=" + match.getId());
         } else {
-            setMatchScoreAttributes(request);
-            request.getRequestDispatcher("/match-score.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() + "/match-score?uuid=" + matchUUID);
         }
     }
 
