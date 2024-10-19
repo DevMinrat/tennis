@@ -16,13 +16,23 @@ public class FinishedMatchesPersistenceServiceImpl implements FinishedMatchesPer
     }
 
     @Override
-    public List<Match> getMatchesByName(Session session, String playerName) {
-        return matchDao.getMatchesByName(session, playerName);
+    public List<Match> getMatchesByName(Session session, String playerName, int offset, int limit) {
+        return matchDao.getMatchesByName(session, playerName, offset, limit);
     }
 
     @Override
-    public List<Match> getAllMatches(Session session) {
-        return matchDao.getAllMatches(session);
+    public List<Match> getAllMatches(Session session, int offset, int limit) {
+        return matchDao.getAllMatches(session, offset, limit);
+    }
+
+    @Override
+    public long getMatchesCount(Session session) {
+        return matchDao.getMatchesCount(session);
+    }
+
+    @Override
+    public long getMatchesCount(Session session, String playerName) {
+        return matchDao.getMatchesCount(session, playerName);
     }
 
     @Override

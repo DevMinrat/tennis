@@ -31,5 +31,28 @@
         </tr>
     </c:forEach>
 </table>
+<br>
+<br>
+<c:if test="${currentPage > 1}">
+    <c:choose>
+        <c:when test="${not empty playerName}">
+            <a href="?page_number=${currentPage - 1}&filter_by_player_name=${playerName}">Prev</a>
+        </c:when>
+        <c:otherwise>
+            <a href="?page_number=${currentPage - 1}">Prev</a>
+        </c:otherwise>
+    </c:choose>
+</c:if>
+<span>Page ${currentPage} of ${totalPages}</span>
+<c:if test="${currentPage < totalPages}">
+    <c:choose>
+        <c:when test="${not empty playerName}">
+            <a href="?page_number=${currentPage + 1}&filter_by_player_name=${playerName}">Next</a>
+        </c:when>
+        <c:otherwise>
+            <a href="?page_number=${currentPage + 1}">Next</a>
+        </c:otherwise>
+    </c:choose>
+</c:if>
 </body>
 </html>
