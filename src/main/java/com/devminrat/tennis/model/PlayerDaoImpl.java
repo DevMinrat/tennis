@@ -14,7 +14,7 @@ public class PlayerDaoImpl implements PlayerDao {
         return new JPAQuery<Player>(session)
                 .select(QPlayer.player)
                 .from(QPlayer.player)
-                .where(QPlayer.player.name.eq(name))
+                .where(QPlayer.player.name.toLowerCase().eq(name.toLowerCase()))
                 .fetchFirst();
     }
 
