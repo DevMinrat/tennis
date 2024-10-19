@@ -11,10 +11,13 @@
     </style>
 </head>
 <body>
-<h1><%= "Hello World!" %>
+<h1><%= "Start page!" %>
 </h1>
 <br/>
 <a href="match-score">Hello Servlet</a>
+<br>
+<br/>
+<a href="matches">Matches</a>
 <br>
 <a href="${pageContext.request.contextPath}/new-match.jsp">New Match</a>
 

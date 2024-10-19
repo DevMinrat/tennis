@@ -17,8 +17,12 @@ public class MatchDaoImpl implements MatchDao {
 
     @Override
     public List<Match> getMatchesByName(Session session, String name) {
+        name = name.toLowerCase();
+        var player1 = QMatch.match.player1.name.toLowerCase();
+        var player2 = QMatch.match.player1.name.toLowerCase();
+
         return new JPAQuery<Match>(session).select(QMatch.match).from(QMatch.match)
-                .where(QMatch.match.player1.name.eq(name).or(QMatch.match.player2.name.eq(name))).fetch();
+                .where(player1.eq(name).or(player2.eq(name))).fetch();
     }
 
     @Override

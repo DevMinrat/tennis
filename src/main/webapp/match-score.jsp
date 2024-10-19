@@ -14,7 +14,7 @@
 <h1><%= "Match Score" %>
 </h1>
 <br/>
-<h1>Match between ${match.player1.getName()} and ${match.player2.getName()}</h1>
+<h2>Match between ${match.player1.getName()} and ${match.player2.getName()}</h2>
 <p>Player 1: ${player1Sets} sets</p>
 <p>Player 2: ${player2Sets} sets</p>
 <br>

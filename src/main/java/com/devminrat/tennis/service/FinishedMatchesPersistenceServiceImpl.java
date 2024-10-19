@@ -22,7 +22,7 @@ public class FinishedMatchesPersistenceServiceImpl implements FinishedMatchesPer
 
     @Override
     public List<Match> getAllMatches(Session session) {
-        return List.of();
+        return matchDao.getAllMatches(session);
     }
 
     @Override

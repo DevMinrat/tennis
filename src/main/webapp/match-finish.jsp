@@ -11,10 +11,10 @@
     </style>
 </head>
 <body>
-<h1><%= "Match Score" %>
+<h1><%= "Match Finished" %>
 </h1>
 <br/>
-<h1>${match.getWinner().getName()} won!</h1>
+<h2>${match.getWinner().getName()} won!</h2>
 <p>Player 1: ${match.player1.getName()}</p>
 <p>Player 2: ${match.player2.getName()}</p>
 <br>
