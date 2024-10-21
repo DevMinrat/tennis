@@ -15,11 +15,16 @@ import com.devminrat.tennis.util.HibernateUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @WebServlet(name = "matchScoreController", value = "/match-score")
 public class MatchScoreController extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(MatchesController.class);
+
     private Match match;
     private UUID matchUUID;
 
@@ -37,7 +42,7 @@ public class MatchScoreController extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         MatchScoreCalcService matchScoreCalcService = new MatchScoreCalcServiceImpl();
         FinishedMatchesPersistenceService fmps = new FinishedMatchesPersistenceServiceImpl();
         PlayerType pointWinner = PlayerType.valueOf((request.getParameter("winner").toUpperCase()));
@@ -52,6 +57,12 @@ public class MatchScoreController extends HttpServlet {
                 fmps.addMatch(session, match);
 
                 session.getTransaction().commit();
+            } catch (HibernateException e) {
+                logger.error(e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred while adding new match");
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
             }
             response.sendRedirect(request.getContextPath() + "/match-finish?matchId=" + match.getId());
         } else {

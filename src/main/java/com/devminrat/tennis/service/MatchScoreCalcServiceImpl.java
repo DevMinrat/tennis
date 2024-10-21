@@ -41,11 +41,6 @@ public class MatchScoreCalcServiceImpl implements MatchScoreCalcService {
         }
     }
 
-    @Override
-    public boolean isMatchFinished(Match match) {
-        return match.getMatchScore().getIsMatchFinished();
-    }
-
     private PlayerType getOpponentPlayer(PlayerType playerWhoScored) {
         return playerWhoScored == PLAYER_1 ? PLAYER_2 : PLAYER_1;
     }

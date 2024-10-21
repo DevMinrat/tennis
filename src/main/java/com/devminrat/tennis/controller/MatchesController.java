@@ -9,16 +9,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "MatchesController", value = "/matches")
 public class MatchesController extends HttpServlet {
-    public static final int RECORDS_SIZE = 5;
+    private static final Logger logger = LoggerFactory.getLogger(MatchesController.class);
 
+    public static final int RECORDS_SIZE = 5;
     FinishedMatchesPersistenceService fmps = new FinishedMatchesPersistenceServiceImpl();
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -34,18 +38,14 @@ public class MatchesController extends HttpServlet {
             int page = pageParam != null ? Math.max(1, Integer.parseInt(pageParam)) : 1;
             int offset = (page - 1) * RECORDS_SIZE;
 
-            //TODO: refactoring duplicated code
-            if (playerName != null && !playerName.trim().isEmpty()) {
-                matches = fmps.getMatchesByName(session, playerName, RECORDS_SIZE, offset);
-                totalRecords = fmps.getMatchesCount(session, playerName);
-                totalPages = (int) Math.ceil(totalRecords / (double) RECORDS_SIZE);
-                totalPages = Math.max(1, totalPages);
-            } else {
-                matches = fmps.getAllMatches(session, RECORDS_SIZE, offset);
-                totalRecords = fmps.getMatchesCount(session);
-                totalPages = (int) Math.ceil(totalRecords / (double) RECORDS_SIZE);
-                totalPages = Math.max(1, totalPages);
-            }
+            boolean isSearchByPlayer = playerName != null && !playerName.trim().isEmpty();
+
+            matches = isSearchByPlayer ? fmps.getMatchesByName(session, playerName, RECORDS_SIZE, offset)
+                    : fmps.getAllMatches(session, RECORDS_SIZE, offset);
+            totalRecords = isSearchByPlayer ? fmps.getMatchesCount(session, playerName) : fmps.getMatchesCount(session);
+
+            totalPages = (int) Math.ceil(totalRecords / (double) RECORDS_SIZE);
+            totalPages = Math.max(1, totalPages);
 
             if (page > totalPages) {
                 page = totalPages;
@@ -57,10 +57,16 @@ public class MatchesController extends HttpServlet {
             req.setAttribute("playerName", playerName);
             req.getRequestDispatcher("matches.jsp").forward(req, res);
 
+        } catch (HibernateException e) {
+            logger.error(e.getMessage(), e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred while getting the matches list");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
         }
     }
 
-    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String playerName = req.getParameter("filter_by_player_name");
 
         if (playerName != null && !playerName.trim().isEmpty()) {

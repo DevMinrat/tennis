@@ -12,14 +12,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.UUID;
 
 @WebServlet(name = "newMatchController", value = "/new-match")
 public class NewMatchController extends HttpServlet {
+    private static final Logger logger = LoggerFactory.getLogger(MatchesController.class);
+
     PlayerService playerService = new PlayerServiceImpl();
 
     @Override
@@ -44,6 +49,12 @@ public class NewMatchController extends HttpServlet {
             } else {
                 System.out.println("set players!");
             }
+        } catch (HibernateException e) {
+            logger.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred while fetching players");
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
         }
     }
 }
