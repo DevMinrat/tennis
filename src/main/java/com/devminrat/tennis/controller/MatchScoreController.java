@@ -17,7 +17,6 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +49,7 @@ public class MatchScoreController extends HttpServlet {
         matchScoreCalcService.updateScore(match, pointWinner);
 
         if (match.getMatchScore().getIsMatchFinished()) {
-            try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
+            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
                 session.beginTransaction();
 
                 MatchManager.removeMatch(matchUUID);

@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,7 @@ public class NewMatchController extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             String player1Name = request.getParameter(PlayerType.PLAYER1.name().toLowerCase());

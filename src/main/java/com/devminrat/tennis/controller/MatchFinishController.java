@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,7 @@ public class MatchFinishController extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int matchId = Integer.parseInt(request.getParameter("matchId"));
 
-        try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Match match = fmps.getMatchById(session, matchId);
 
             if (match != null) {

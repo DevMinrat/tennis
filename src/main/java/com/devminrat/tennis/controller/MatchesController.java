@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +26,7 @@ public class MatchesController extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         //TODO: initialize SessionFactory once.
-        try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Match> matches;
             long totalRecords;
             int totalPages;

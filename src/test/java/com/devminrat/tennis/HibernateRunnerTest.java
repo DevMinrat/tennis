@@ -6,7 +6,6 @@ import com.devminrat.tennis.util.HibernateUtil;
 import jakarta.persistence.PersistenceException;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +15,7 @@ public class HibernateRunnerTest {
 
     @Test
     public void addNewPlayerAndMatch() {
-        try (SessionFactory sf = HibernateUtil.buildSessionFactory();
-             Session session = sf.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             var player1 = new Player();
@@ -42,8 +40,7 @@ public class HibernateRunnerTest {
 
     @Test
     public void checkOneToMany() {
-        try (SessionFactory sf = HibernateUtil.buildSessionFactory();
-             Session session = sf.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             var player1 = session.get(Player.class, 1);
@@ -57,7 +54,7 @@ public class HibernateRunnerTest {
 
     @Test
     public void test_checkMatchConstraint_samePlayerNotAllowed() {
-        try (SessionFactory sf = HibernateUtil.buildSessionFactory(); Session session = sf.openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             Player p1 = session.get(Player.class, 1);
