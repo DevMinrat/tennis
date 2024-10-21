@@ -33,7 +33,7 @@ public class MatchScoreCalcServiceImpl implements MatchScoreCalcService {
 
             if (checkGamesForSet(matchScore, playerWhoScored, opponentPlayer)) {
                 addOneSetAndResetGames(matchScore, playerWhoScored);
-                if (checkSets(matchScore, playerWhoScored)) {
+                if (checkSetsForWinCondition(matchScore, playerWhoScored)) {
                     matchScore.setIsMatchFinished(true);
                     match.setWinner(playerWhoScored);
                 }
@@ -92,7 +92,7 @@ public class MatchScoreCalcServiceImpl implements MatchScoreCalcService {
         matchScore.setPlayerGames(PLAYER_2, 0);
     }
 
-    private boolean checkSets(MatchScore matchScore, PlayerType playerWhoScored) {
+    private boolean checkSetsForWinCondition(MatchScore matchScore, PlayerType playerWhoScored) {
         return matchScore.getPlayerSets(playerWhoScored) == POINTS_TO_WIN_MATCH;
     }
 }

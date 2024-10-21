@@ -55,13 +55,18 @@ public class MatchesController extends HttpServlet {
             req.setAttribute("currentPage", page);
             req.setAttribute("totalPages", totalPages);
             req.setAttribute("playerName", playerName);
-            System.out.println(playerName);
             req.getRequestDispatcher("matches.jsp").forward(req, res);
 
         }
     }
 
-    public void doPost(HttpServletRequest req, HttpServletResponse res) {
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        String playerName = req.getParameter("filter_by_player_name");
 
+        if (playerName != null && !playerName.trim().isEmpty()) {
+            res.sendRedirect(req.getContextPath() + "/matches?filter_by_player_name=" + playerName);
+        } else {
+            res.sendRedirect(req.getContextPath() + "/matches");
+        }
     }
 }

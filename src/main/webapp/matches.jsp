@@ -15,6 +15,13 @@
 <h1><%= "Matches" %>
 </h1>
 <br/>
+<form method="post" action="matches">
+    <input type="text" name="filter_by_player_name" placeholder="Player name" value="${playerName}">
+    <button type="submit">Send</button>
+    <button type="button" onclick="document.getElementsByName('filter_by_player_name')[0].value = '';">Reset</button>
+</form>
+<br/>
+<br/>
 <table>
     <tr>
         <th>Match ID</th>
