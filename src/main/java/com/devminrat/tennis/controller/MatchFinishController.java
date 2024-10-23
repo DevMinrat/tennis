@@ -23,7 +23,7 @@ public class MatchFinishController extends HttpServlet {
     FinishedMatchesPersistenceService fmps = new FinishedMatchesPersistenceServiceImpl();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int matchId = Integer.parseInt(request.getParameter("matchId"));
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

@@ -4,7 +4,6 @@ import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.service.FinishedMatchesPersistenceService;
 import com.devminrat.tennis.service.FinishedMatchesPersistenceServiceImpl;
 import com.devminrat.tennis.util.HibernateUtil;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import static com.devminrat.tennis.util.ValidateUtil.isValidValues;
+
 @WebServlet(name = "MatchesController", value = "/matches")
 public class MatchesController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(MatchesController.class);
@@ -24,8 +25,7 @@ public class MatchesController extends HttpServlet {
     public static final int RECORDS_SIZE = 5;
     FinishedMatchesPersistenceService fmps = new FinishedMatchesPersistenceServiceImpl();
 
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        //TODO: initialize SessionFactory once.
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Match> matches;
             long totalRecords;
@@ -37,7 +37,7 @@ public class MatchesController extends HttpServlet {
             int page = pageParam != null ? Math.max(1, Integer.parseInt(pageParam)) : 1;
             int offset = (page - 1) * RECORDS_SIZE;
 
-            boolean isSearchByPlayer = playerName != null && !playerName.trim().isEmpty();
+            boolean isSearchByPlayer = isValidValues(playerName);
 
             matches = isSearchByPlayer ? fmps.getMatchesByName(session, playerName, RECORDS_SIZE, offset)
                     : fmps.getAllMatches(session, RECORDS_SIZE, offset);

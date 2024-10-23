@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.devminrat.tennis.util.ValidateUtil.isValidValues;
+
 @WebServlet(name = "newMatchController", value = "/new-match")
 public class NewMatchController extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(MatchesController.class);
@@ -34,7 +36,16 @@ public class NewMatchController extends HttpServlet {
             String player1Name = request.getParameter(PlayerType.PLAYER1.name().toLowerCase());
             String player2Name = request.getParameter(PlayerType.PLAYER2.name().toLowerCase());
 
-            if (player1Name != null && player2Name != null) {
+            System.out.println(player1Name);
+            System.out.println(player2Name);
+
+            if (isValidValues(player1Name, player2Name)) {
+                if (player1Name.equals(player2Name)) {
+                    logger.error("Player1 name is the same as Player2 name");
+                    response.sendError(HttpServletResponse.SC_CONFLICT, "Player1 name is the same as Player2 name");
+                    return;
+                }
+
                 Player player1 = playerService.findOrCreatePlayer(session, player1Name);
                 Player player2 = playerService.findOrCreatePlayer(session, player2Name);
 
@@ -46,7 +57,8 @@ public class NewMatchController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/match-score?uuid=" + matchID);
 
             } else {
-                System.out.println("set players!");
+                logger.error("Player1 name or Player2 name is null");
+                response.sendError(HttpServletResponse.SC_CONFLICT, "Player1 name or Player2 name is null");
             }
         } catch (HibernateException e) {
             logger.error(e.getMessage(), e);
