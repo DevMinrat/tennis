@@ -28,6 +28,9 @@ public class MatchDaoImpl implements MatchDao {
 
         return new JPAQuery<Match>(session).select(QMatch.match).from(QMatch.match)
                 .where(player1.eq(name).or(player2.eq(name)))
+                .leftJoin(QMatch.match.player1).fetchJoin()
+                .leftJoin(QMatch.match.player2).fetchJoin()
+                .leftJoin(QMatch.match.winner).fetchJoin()
                 .limit(limit)
                 .offset(offset)
                 .fetch();
@@ -38,6 +41,9 @@ public class MatchDaoImpl implements MatchDao {
         return new JPAQuery<Match>(session)
                 .select(QMatch.match)
                 .from(QMatch.match)
+                .leftJoin(QMatch.match.player1).fetchJoin()
+                .leftJoin(QMatch.match.player2).fetchJoin()
+                .leftJoin(QMatch.match.winner).fetchJoin()
                 .limit(limit)
                 .offset(offset)
                 .fetch();
