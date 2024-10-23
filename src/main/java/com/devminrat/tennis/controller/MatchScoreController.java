@@ -36,7 +36,8 @@ public class MatchScoreController extends HttpServlet {
             setMatchScoreAttributes(request);
             request.getRequestDispatcher("/match-score.jsp").forward(request, response);
         } else {
-            System.out.println("Match not found");
+            logger.error("Match not found");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Match not found");
         }
     }
 
@@ -63,7 +64,11 @@ public class MatchScoreController extends HttpServlet {
                 logger.error(e.getMessage(), e);
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
             }
-            response.sendRedirect(request.getContextPath() + "/match-finish?matchId=" + match.getId());
+
+            request.setAttribute("match", match);
+            request.setAttribute("player1Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER1));
+            request.setAttribute("player2Sets", match.getMatchScore().getPlayerSets(PlayerType.PLAYER2));
+            request.getRequestDispatcher("/WEB-INF/pages/match-finish.jsp").forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/match-score?uuid=" + matchUUID);
         }

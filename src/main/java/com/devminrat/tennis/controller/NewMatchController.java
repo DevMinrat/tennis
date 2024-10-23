@@ -8,6 +8,7 @@ import com.devminrat.tennis.manager.MatchManager;
 import com.devminrat.tennis.service.PlayerService;
 import com.devminrat.tennis.service.PlayerServiceImpl;
 import com.devminrat.tennis.util.HibernateUtil;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,15 +30,17 @@ public class NewMatchController extends HttpServlet {
     PlayerService playerService = new PlayerServiceImpl();
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/pages/new-match.jsp").forward(request, response);
+    }
+
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             session.beginTransaction();
 
             String player1Name = request.getParameter(PlayerType.PLAYER1.name().toLowerCase());
             String player2Name = request.getParameter(PlayerType.PLAYER2.name().toLowerCase());
-
-            System.out.println(player1Name);
-            System.out.println(player2Name);
 
             if (isValidValues(player1Name, player2Name)) {
                 if (player1Name.equals(player2Name)) {

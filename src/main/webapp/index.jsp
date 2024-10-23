@@ -14,15 +14,10 @@
 <h1><%= "Start page!" %>
 </h1>
 <br/>
-<a href="match-score">Hello Servlet</a>
-<br>
 <br/>
 <a href="matches">Matches</a>
 <br>
-<a href="${pageContext.request.contextPath}/new-match.jsp">New Match</a>
-
-</form>
-
+<a href="new-match">New Match</a>
 
 </body>
 </html>
