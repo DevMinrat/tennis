@@ -43,7 +43,7 @@ public class NewMatchController extends HttpServlet {
             String player2Name = request.getParameter(PlayerType.PLAYER2.name().toLowerCase());
 
             if (isValidValues(player1Name, player2Name)) {
-                if (player1Name.equals(player2Name)) {
+                if (player1Name.equalsIgnoreCase(player2Name)) {
                     logger.error("Player1 name is the same as Player2 name");
                     response.sendError(HttpServletResponse.SC_CONFLICT, "Player1 name is the same as Player2 name");
                     return;
