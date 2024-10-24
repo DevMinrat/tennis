@@ -2,23 +2,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Match Score</title>
-    <style>
-        body {
-            background-color: #1b1b1b;
-            color: white;
-        }
-    </style>
+    <title>Match Finished Page</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<h1><%= "Match Finished" %>
-</h1>
-<br/>
-<h2>${match.getWinner().getName()} won!</h2>
-<p>Player 1: ${match.player1.getName()}</p>
-<p>Player 2: ${match.player2.getName()}</p>
-<br>
-<p>Player 1: ${player1Sets} sets</p>
-<p>Player 2: ${player2Sets} sets</p>
+
+<%@ include file="header.jsp" %>
+
+<main>
+    <h1>Match Finished</h1>
+
+    <div class="result">
+        <h2>${match.getWinner().getName()} won!</h2>
+        <div class="player">
+            <p>${match.player1.getName()}: ${player1Sets} sets</p>
+        </div>
+        <div class="player">
+            <p>${match.player2.getName()}: ${player2Sets} sets</p>
+        </div>
+    </div>
+
+    <a class="back-link" href="matches">Back to Matches</a>
+</main>
+
 </body>
 </html>

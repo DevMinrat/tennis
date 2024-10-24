@@ -2,22 +2,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
-    <style>
-        body {
-            background-color: #1b1b1b;
-            color: white;
-        }
-    </style>
+    <title>Tennis score project</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<h1><%= "Start page!" %>
-</h1>
-<br/>
-<br/>
-<a href="matches">Matches</a>
-<br>
-<a href="new-match">New Match</a>
+
+<%@ include file="WEB-INF/pages/header.jsp" %>
+
+<main>
+    <h1>TENNIS SCORE</h1>
+    <a href="matches" class="first_page_btn">Matches</a>
+    <a href="new-match" class="first_page_btn">New Match</a>
+</main>
 
 </body>
 </html>
