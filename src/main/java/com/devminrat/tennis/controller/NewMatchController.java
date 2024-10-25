@@ -21,6 +21,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.devminrat.tennis.constants.ErrorMessage.*;
+import static com.devminrat.tennis.util.ResponseUtil.writeConflictResponse;
+import static com.devminrat.tennis.util.ResponseUtil.writeInternalServerErrorResponse;
 import static com.devminrat.tennis.util.ValidateUtil.isValidValues;
 
 @WebServlet(name = "newMatchController", value = "/new-match")
@@ -44,8 +47,8 @@ public class NewMatchController extends HttpServlet {
 
             if (isValidValues(player1Name, player2Name)) {
                 if (player1Name.equalsIgnoreCase(player2Name)) {
-                    logger.error("Player1 name is the same as Player2 name");
-                    response.sendError(HttpServletResponse.SC_CONFLICT, "Player1 name is the same as Player2 name");
+                    logger.error(SAME_PLAYERS.getMessage());
+                    writeConflictResponse(response, SAME_PLAYERS.getMessage());
                     return;
                 }
 
@@ -60,15 +63,15 @@ public class NewMatchController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/match-score?uuid=" + matchID);
 
             } else {
-                logger.error("Player1 name or Player2 name is null");
-                response.sendError(HttpServletResponse.SC_CONFLICT, "Player1 name or Player2 name is null");
+                logger.error(NULL_PLAYERS_NAME.getMessage());
+                writeConflictResponse(response, NULL_PLAYERS_NAME.getMessage());
             }
         } catch (HibernateException e) {
             logger.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred while fetching players");
+            writeInternalServerErrorResponse(response, CANT_FETCH_PLAYERS.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+            writeInternalServerErrorResponse(response);
         }
     }
 }

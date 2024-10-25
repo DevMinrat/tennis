@@ -7,6 +7,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 
+import static com.devminrat.tennis.constants.ErrorMessage.PLAYER_EXIST;
+import static com.devminrat.tennis.util.ResponseUtil.writeConflictResponse;
+
 public class PlayerDaoImpl implements PlayerDao {
 
     @Override
@@ -24,7 +27,7 @@ public class PlayerDaoImpl implements PlayerDao {
             session.persist(player);
             return true;
         } catch (ConstraintViolationException e) {
-            System.out.println("Player already exists!");
+            System.out.println(PLAYER_EXIST.getMessage());
             return false;
         } catch (HibernateException e) {
             e.printStackTrace();

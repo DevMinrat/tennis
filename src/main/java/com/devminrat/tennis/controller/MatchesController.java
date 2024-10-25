@@ -1,5 +1,6 @@
 package com.devminrat.tennis.controller;
 
+import com.devminrat.tennis.constants.Constants;
 import com.devminrat.tennis.entity.Match;
 import com.devminrat.tennis.service.FinishedMatchesPersistenceService;
 import com.devminrat.tennis.service.FinishedMatchesPersistenceServiceImpl;
@@ -16,6 +17,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import static com.devminrat.tennis.constants.Constants.MatchesStrings.*;
+import static com.devminrat.tennis.constants.ErrorMessage.CANT_GET_MATCHES;
+import static com.devminrat.tennis.util.ResponseUtil.writeInternalServerErrorResponse;
 import static com.devminrat.tennis.util.ValidateUtil.isValidValues;
 
 @WebServlet(name = "MatchesController", value = "/matches")
@@ -31,8 +35,8 @@ public class MatchesController extends HttpServlet {
             long totalRecords;
             int totalPages;
 
-            String playerName = req.getParameter("filter_by_player_name");
-            String pageParam = req.getParameter("page_number");
+            String playerName = req.getParameter(filter_by_player_name);
+            String pageParam = req.getParameter(page_number);
 
             int page = pageParam != null ? Math.max(1, Integer.parseInt(pageParam)) : 1;
             int offset = (page - 1) * RECORDS_SIZE;
@@ -50,23 +54,23 @@ public class MatchesController extends HttpServlet {
                 page = totalPages;
             }
 
-            req.setAttribute("matches", matches);
-            req.setAttribute("currentPage", page);
-            req.setAttribute("totalPages", totalPages);
-            req.setAttribute("playerName", playerName);
+            req.setAttribute(Constants.MatchesStrings.matches, matches);
+            req.setAttribute(currentPage, page);
+            req.setAttribute(Constants.MatchesStrings.totalPages, totalPages);
+            req.setAttribute(Constants.MatchesStrings.playerName, playerName);
             req.getRequestDispatcher("matches.jsp").forward(req, res);
 
         } catch (HibernateException e) {
             logger.error(e.getMessage(), e);
-            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error occurred while getting the matches list");
+            writeInternalServerErrorResponse(res, CANT_GET_MATCHES.getMessage());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal server error");
+            writeInternalServerErrorResponse(res);
         }
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String playerName = req.getParameter("filter_by_player_name");
+        String playerName = req.getParameter(filter_by_player_name);
 
         if (playerName != null && !playerName.trim().isEmpty()) {
             res.sendRedirect(req.getContextPath() + "/matches?filter_by_player_name=" + playerName);

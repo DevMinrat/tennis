@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
+import static com.devminrat.tennis.constants.ErrorMessage.CANT_FETCH_MATCH;
+
 public class MatchDaoImpl implements MatchDao {
     private static final Logger logger = LoggerFactory.getLogger(MatchDaoImpl.class);
 
@@ -76,7 +78,7 @@ public class MatchDaoImpl implements MatchDao {
             session.persist(match);
             return true;
         } catch (HibernateException e) {
-            logger.error("Error adding match: ", e);
+            logger.error(CANT_FETCH_MATCH.getMessage());
             return false;
         }
     }
