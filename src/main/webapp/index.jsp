@@ -11,8 +11,8 @@
 
 <main>
     <h1>TENNIS SCORE</h1>
-    <a href="matches" class="first_page_btn">Matches</a>
     <a href="new-match" class="first_page_btn">New Match</a>
+    <a href="matches" class="first_page_btn">Matches</a>
 </main>
 
 </body>
